@@ -17,7 +17,7 @@ public class UploadUtil {
 			String nomeArquivo = imagem.getOriginalFilename();
 			try {
 				//criando diretorio para armazenar o arquivo
-				String pastaUploadImagem ="${HOME}/img-uploads";
+				String pastaUploadImagem = this.getClass().getResource("/static/images/img-user-profiles").toURI().getPath();
 				File dir = new File(pastaUploadImagem);
 				if(!dir.exists()) {
 					dir.mkdir();

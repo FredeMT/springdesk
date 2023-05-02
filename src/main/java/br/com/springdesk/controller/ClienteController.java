@@ -65,5 +65,29 @@ public class ClienteController {
         ModelAndView mv =  new ModelAndView("home/index");
         return mv;
     }
+	
+	@GetMapping("/editar-perfil")
+	public ModelAndView editarPerfil(@RequestParam("id") Integer id) {
+		ModelAndView mv = new ModelAndView("cliente/editProfile");
+		mv.addObject("usuario", clienteRepository.findById(id));
+		return mv;
+	}
+	
+	@PostMapping("/editar-perfil")
+	public ModelAndView editarPerfil(@ModelAttribute Cliente cliente, @RequestParam("file") MultipartFile imagem ) {
+		ModelAndView mv = new ModelAndView("cliente/editProfile");
+		try {
+			if(uploadUtil.uploadImagem(imagem)) {
+				cliente.setImagem(imagem.getOriginalFilename());
+			}
+			clienteRepository.save(cliente);
+			System.out.println("Salvo com sucesso: " + cliente.getNome() + " " + cliente.getImagem());
+			return home();
+		} catch (Exception e) {
+			mv.addObject("msgErro", e.getMessage());
+			System.out.println("Erro ao salvar " + e.getMessage());
+			return mv;
+		}
+	}
 
 }

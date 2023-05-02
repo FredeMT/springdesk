@@ -2,6 +2,7 @@ package br.com.springdesk.model;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -18,6 +19,7 @@ public abstract class Pessoa {
 	
 	private String nome;
 	
+	@Column(unique = true)
 	private String email;
 
 	private String senha;
