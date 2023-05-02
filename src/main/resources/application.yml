@@ -17,3 +17,7 @@ spring:
       mode: always
   thymeleaf:
     cache: false
+server:
+  servlet:
+    session:
+      timeout: 60s

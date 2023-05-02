@@ -1,6 +1,7 @@
 package br.com.springdesk.model;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,6 +66,23 @@ public class TecnicoUserDetailsImpl implements UserDetails {
 	public boolean isEnabled() {
 		// implementar metodo se usuario ativo.
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(tecnico);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TecnicoUserDetailsImpl other = (TecnicoUserDetailsImpl) obj;
+		return Objects.equals(tecnico, other.tecnico);
 	}
 
 }

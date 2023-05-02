@@ -1,6 +1,7 @@
 package br.com.springdesk.model;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -64,6 +65,23 @@ public class ClienteUserDetailsImpl implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cliente);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ClienteUserDetailsImpl other = (ClienteUserDetailsImpl) obj;
+		return Objects.equals(cliente, other.cliente);
 	}
 
 }
