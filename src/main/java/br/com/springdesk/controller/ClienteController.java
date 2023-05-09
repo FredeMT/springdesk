@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.springdesk.model.Cliente;
 import br.com.springdesk.model.Perfil;
+import br.com.springdesk.repository.ChamadoRepository;
 import br.com.springdesk.repository.ClienteRepository;
 import br.com.springdesk.util.PasswordUtil;
 import br.com.springdesk.util.UploadUtil;
@@ -29,11 +31,14 @@ public class ClienteController {
 	@Autowired
 	ClienteRepository clienteRepository;
 	
+	@Autowired
+	private ChamadoRepository chamadoRepository;
+	
 	@GetMapping("cadastro")
 	public ModelAndView cadastro(Cliente cliente) {
 		ModelAndView mv = new ModelAndView("cliente/cadastro");
 		mv.addObject("usuario", new Cliente());
-		mv.addObject("perfis", Perfil.values());
+		mv.addObject("perfils", Perfil.values());
 		return mv;
 	}
 	
@@ -63,6 +68,7 @@ public class ClienteController {
 	@GetMapping("/inicio")
     public ModelAndView home(){
         ModelAndView mv =  new ModelAndView("home/index");
+        mv.addObject("chamadosList",  chamadoRepository.findAll());
         return mv;
     }
 	
@@ -89,5 +95,34 @@ public class ClienteController {
 			return mv;
 		}
 	}
+	
+	@GetMapping("list-clientes")
+	public ModelAndView clientesList() {
+		ModelAndView mv =  new ModelAndView("cliente/list-cliente");
+		mv.addObject("clientes", clienteRepository.findAll());
+		return mv;
+	}
+	
+	@GetMapping("/excluir/{id}")
+	public ModelAndView excluirCliente(@PathVariable("id") Integer id) {
+		clienteRepository.deleteById(id);
+		return clientesList();
+	}
+	
+	@GetMapping("/editar/{id}")
+	public ModelAndView editarCliente(@PathVariable("id") Integer id) {
+		ModelAndView mv =  new ModelAndView("cliente/editar");
+		mv.addObject("perfils", Perfil.values());
+		mv.addObject("usuario", clienteRepository.findById(id));
+		return mv;
+	}
+	
+	@PostMapping("/editar-cliente")
+	public ModelAndView editar(Cliente cliente) {
+		clienteRepository.save(cliente);
+		return clientesList();
+	}
+	
+	
 
 }
