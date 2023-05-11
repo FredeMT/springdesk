@@ -13,7 +13,7 @@ public class HomeController {
 	@Autowired
 	private ChamadoRepository chamadoRepository;
 	
-	@GetMapping
+	@GetMapping()
 	public ModelAndView start() {
 		ModelAndView mv = new ModelAndView("home/index");
 		mv.addObject("chamadosList",  chamadoRepository.findAll());

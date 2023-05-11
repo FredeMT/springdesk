@@ -22,13 +22,13 @@
             <div class="col-md-12 grid-margin">
               <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                  <h3 class="font-weight-bold">Editar Cliente</h3>
+                  <h3 class="font-weight-bold">Editar Técnico</h3>
                 </div>
               </div>
             </div>
           </div>
                 <!-- conteúdo principal -->
-            <form th:action="@{/tecnico/editar-tecnico}" method="post" th:object="${tec}" enctype="multipart/form-data">
+            <form th:action="@{/tecnico/editar-tecnico}" method="post" th:object="${tecnico}" enctype="multipart/form-data">
                 <div class="row">
 					<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
                   <input type="hidden" th:field="*{id}">

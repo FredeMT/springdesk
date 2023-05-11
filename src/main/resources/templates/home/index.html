@@ -40,6 +40,7 @@
                         <th scope="col">Prioridade</th>
                         <th scope="col">Status</th>
                         <th scope="col">Técnico Responsável</th>
+                        <th scope="col">Ações</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -51,6 +52,8 @@
                         <td th:text="${chamados.prioridade}"></td>
                         <td th:text="${chamados.status}"></td>
                         <td th:text="${chamados.tecnico.nome}"></td>
+                        <td><a class="btn btn-warning" th:href="@{~/ticket/editar/{id}(id=${chamados.id})}">EDITAR</a>
+                                <a class="btn btn-danger" th:href="@{~/ticket/excluir/{id}(id=${chamados.id})}">Excluir</a></td>
                       </tr>
                       
                     </tbody>
