@@ -1,6 +1,7 @@
 package br.com.springdesk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class ChamadoController {
 	ChamadoRepository chamadoRepository;
 	
 	@GetMapping("/criar")
+	@PreAuthorize("hasAnyAuthority('CLIENTE','ADMIN')")
 	public ModelAndView ticket(Chamado chamado) {
 		ModelAndView mv = new ModelAndView("chamados/ticket");
 		mv.addObject("ticket", chamado);
@@ -35,18 +37,21 @@ public class ChamadoController {
 	}
 	
 	@PostMapping("/new-ticket")
+	@PreAuthorize("hasAnyAuthority('CLIENTE','ADMIN')")
 	public ModelAndView newTicket(Chamado chamado) {
 		chamadoRepository.save(chamado);
 		return home();
 	}
 	
 	@GetMapping("/inicio")
+	@PreAuthorize("hasAnyAuthority('CLIENTE','ADMIN')")
     public ModelAndView home(){
         ModelAndView mv =  new ModelAndView("home/index");
         mv.addObject("chamadosList",  chamadoRepository.findAll());
         return mv;
     }
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@GetMapping("/excluir/{id}")
 	public ModelAndView excluirChamado(@PathVariable("id") Integer id) {
 		chamadoRepository.deleteById(id);
@@ -54,6 +59,7 @@ public class ChamadoController {
 	}
 	
 	@GetMapping("/editar/{id}")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView editarTicket(@PathVariable("id") Integer id) {
 		ModelAndView mv =  new ModelAndView("chamados/editar-ticket");
 		mv.addObject("ticket", chamadoRepository.findById(id));
@@ -64,6 +70,7 @@ public class ChamadoController {
 	}
 	
 	@PostMapping("/editar-ticket")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView editar(Chamado chamado) {
 		chamadoRepository.save(chamado);
 		return home();

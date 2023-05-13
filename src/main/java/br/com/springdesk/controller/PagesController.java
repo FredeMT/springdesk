@@ -10,6 +10,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class PagesController {
     
 
+	@GetMapping("403")
+	public ModelAndView error403() {
+		ModelAndView mv = new ModelAndView("pagesTema/erros/error-403");
+
+		return mv;
+	}
+
     @GetMapping("404")
     public ModelAndView error404(){
         ModelAndView mv = new ModelAndView("pagesTema/erros/error-404");

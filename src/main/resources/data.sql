@@ -1,5 +1,5 @@
---INSERT INTO tecnico (imagem, nome, perfil, senha, email) VALUES (NULL, 'Administrador', 'TECNICO', '$2a$12$VDRdIBPlfL9teP8RdvwGp.PAIMXb7qvC.YkViIMiq/j64nfjWw6PO', 'admin@admin.com');
-INSERT INTO tecnico (imagem, nome, perfil, senha, email) SELECT 'face0.jpg', 'Administrador', 'TECNICO', '$2a$12$VDRdIBPlfL9teP8RdvwGp.PAIMXb7qvC.YkViIMiq/j64nfjWw6PO', 'admin@admin.com' WHERE NOT EXISTS (SELECT 1 FROM tecnico WHERE email='admin@admin.com');
+--INSERT INTO tecnico (imagem, nome, perfil, senha, email) VALUES (NULL, 'Administrador', 'ADMIN', '$2a$12$VDRdIBPlfL9teP8RdvwGp.PAIMXb7qvC.YkViIMiq/j64nfjWw6PO', 'admin@admin.com');
+INSERT INTO tecnico (imagem, nome, perfil, senha, email) SELECT 'face0.jpg', 'Administrador', 'ADMIN', '$2a$12$VDRdIBPlfL9teP8RdvwGp.PAIMXb7qvC.YkViIMiq/j64nfjWw6PO', 'admin@admin.com' WHERE NOT EXISTS (SELECT 1 FROM tecnico WHERE email='admin@admin.com');
 --INSERT INTO tecnico (imagem, nome, perfil, senha, email) VALUES (NULL, 'Paulo', 'TECNICO', '$2a$12$VzxGJrnSGgRdNo3MbVu/a.4pqiU7x0MfSr2q6ode.A6CGIuG9z3Q2', 'paulo@paulo.com');
 INSERT INTO tecnico (imagem, nome, perfil, senha, email) SELECT 'face3.jpg', 'Paulo', 'TECNICO', '$2a$12$VzxGJrnSGgRdNo3MbVu/a.4pqiU7x0MfSr2q6ode.A6CGIuG9z3Q2', 'paulo@paulo.com' WHERE NOT EXISTS (SELECT 1 FROM tecnico WHERE email='paulo@paulo.com');
 --INSERT INTO cliente (imagem, nome, perfil, senha, email) VALUES (NULL, 'Maria', 'CLIENTE', '$2a$12$/ceB45SsGvqaLBrkN7SUjuFeU6LiotXA2W1qNN60qr/058bwxI976', 'maria@maria.com');

@@ -1,6 +1,7 @@
 package br.com.springdesk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -36,6 +37,7 @@ public class TecnicoController {
 	ChamadoRepository chamadoRepository;
 	
 	@GetMapping("cadastro")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView cadastro(Tecnico tecnico) {
 		ModelAndView mv = new ModelAndView("tecnico/cadastro");
 		mv.addObject("tecnico", new Tecnico());
@@ -44,6 +46,7 @@ public class TecnicoController {
 	}
 	
 	@PostMapping("/cadastro-tecnico")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView cadastro(@ModelAttribute Tecnico tecnico, @RequestParam("file") MultipartFile imagem) {
 		ModelAndView mv = new ModelAndView("tecnico/cadastro");
 		
@@ -74,6 +77,7 @@ public class TecnicoController {
     }
 	
 	@GetMapping("list-tecnicos")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView tecnicosList() {
 		ModelAndView mv =  new ModelAndView("tecnico/tecnico-list");
 		mv.addObject("tecnicos", tecnicoRepository.findAll());
@@ -81,12 +85,14 @@ public class TecnicoController {
 	}
 	
 	@GetMapping("/excluir/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView excluirCliente(@PathVariable("id") Integer id) {
 		tecnicoRepository.deleteById(id);
 		return tecnicosList();
 	}
 	
 	@GetMapping("/editar/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView editarTecnico(@PathVariable("id") Integer id) {
 		ModelAndView mv =  new ModelAndView("tecnico/editar");
 		mv.addObject("perfils", Perfil.values());
@@ -95,6 +101,7 @@ public class TecnicoController {
 	}
 	
 	@PostMapping("/editar-tecnico")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView editar(Tecnico tecnico) {
 		tecnicoRepository.save(tecnico);
 		return tecnicosList();

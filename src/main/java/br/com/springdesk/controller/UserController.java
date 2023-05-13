@@ -10,5 +10,10 @@ public class UserController {
 	public String login() {
 		return "login/login";
 	}
+	
+	@GetMapping("/login-error")
+	public String loginError() {
+		return "login/login-error";
+	}
 
 }

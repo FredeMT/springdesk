@@ -49,8 +49,8 @@
                         <td th:text="${chamados.dataAbertura}"></td>
                         <td th:text="${chamados.titulo}"></td>
                         <td th:text="${chamados.observacao}"></td>
-                        <td th:text="${chamados.prioridade}"></td>
-                        <td th:text="${chamados.status}"></td>
+                        <td th:text="${chamados.prioridade.descricao}"></td>
+                        <td th:text="${chamados.status.chamadoTicket}"></td>
                         <td th:text="${chamados.tecnico.nome}"></td>
                         <td><a class="btn btn-warning" th:href="@{~/ticket/editar/{id}(id=${chamados.id})}">EDITAR</a>
                                 <a class="btn btn-danger" th:href="@{~/ticket/excluir/{id}(id=${chamados.id})}">Excluir</a></td>

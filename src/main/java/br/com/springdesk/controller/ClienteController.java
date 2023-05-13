@@ -1,6 +1,7 @@
 package br.com.springdesk.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -35,6 +36,7 @@ public class ClienteController {
 	private ChamadoRepository chamadoRepository;
 	
 	@GetMapping("cadastro")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView cadastro(Cliente cliente) {
 		ModelAndView mv = new ModelAndView("cliente/cadastro");
 		mv.addObject("usuario", new Cliente());
@@ -43,6 +45,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping("/cadastro-cliente")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView cadastro(@ModelAttribute Cliente cliente, @RequestParam("file") MultipartFile imagem) {
 		ModelAndView mv = new ModelAndView("cliente/cadastro");
 		
@@ -73,6 +76,7 @@ public class ClienteController {
     }
 	
 	@GetMapping("/editar-perfil")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView editarPerfil(@RequestParam("id") Integer id) {
 		ModelAndView mv = new ModelAndView("cliente/editProfile");
 		mv.addObject("usuario", clienteRepository.findById(id));
@@ -80,6 +84,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping("/editar-perfil")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView editarPerfil(@ModelAttribute Cliente cliente, @RequestParam("file") MultipartFile imagem ) {
 		ModelAndView mv = new ModelAndView("cliente/editProfile");
 		try {
@@ -104,12 +109,14 @@ public class ClienteController {
 	}
 	
 	@GetMapping("/excluir/{id}")
+	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView excluirCliente(@PathVariable("id") Integer id) {
 		clienteRepository.deleteById(id);
 		return clientesList();
 	}
 	
 	@GetMapping("/editar/{id}")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView editarCliente(@PathVariable("id") Integer id) {
 		ModelAndView mv =  new ModelAndView("cliente/editar");
 		mv.addObject("perfils", Perfil.values());
@@ -118,6 +125,7 @@ public class ClienteController {
 	}
 	
 	@PostMapping("/editar-cliente")
+	@PreAuthorize("hasAnyAuthority('TECNICO','ADMIN')")
 	public ModelAndView editar(Cliente cliente) {
 		clienteRepository.save(cliente);
 		return clientesList();

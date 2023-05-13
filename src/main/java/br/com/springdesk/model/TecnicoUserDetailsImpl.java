@@ -1,9 +1,12 @@
 package br.com.springdesk.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public class TecnicoUserDetailsImpl implements UserDetails {
@@ -30,8 +33,9 @@ public class TecnicoUserDetailsImpl implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+		authorities.add(new SimpleGrantedAuthority(tecnico.getPerfil().toString()));
+		return authorities;
 	}
 
 	@Override
