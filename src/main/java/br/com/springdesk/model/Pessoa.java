@@ -9,6 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Pattern;
+
+import br.com.springdesk.validator.OnCreate;
+import br.com.springdesk.validator.OnUpdate;
+import br.com.springdesk.validator.PasswordConstraint;
 
 @MappedSuperclass
 public abstract class Pessoa {
@@ -19,9 +25,12 @@ public abstract class Pessoa {
 	
 	private String nome;
 	
+	@Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Digite um e-mail válido.")
 	@Column(unique = true)
 	private String email;
 
+	@PasswordConstraint(groups = OnCreate.class)
+	@Null(groups = OnUpdate.class)
 	private String senha;
 	
 	private String imagem;

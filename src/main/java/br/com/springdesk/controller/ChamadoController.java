@@ -1,9 +1,13 @@
 package br.com.springdesk.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +28,7 @@ public class ChamadoController {
 	
 	@Autowired
 	ChamadoRepository chamadoRepository;
+
 	
 	@GetMapping("/criar")
 	@PreAuthorize("hasAnyAuthority('CLIENTE','ADMIN')")
@@ -38,7 +43,17 @@ public class ChamadoController {
 	
 	@PostMapping("/new-ticket")
 	@PreAuthorize("hasAnyAuthority('CLIENTE','ADMIN')")
-	public ModelAndView newTicket(Chamado chamado) {
+	public ModelAndView newTicket(@Valid @ModelAttribute("ticket") Chamado chamado, BindingResult result) {
+		ModelAndView mv = new ModelAndView();
+		if(result.hasErrors()) {
+			//mv.setViewName("pagesTema/erros/error-404");
+			mv.setViewName("chamados/ticket");
+			mv.addObject("ticket", chamado);
+			mv.addObject("statusChamados", StatusTicket.values());
+			mv.addObject("Prioridade", Prioridade.values());
+			mv.addObject("tecnicos", tecnicoRepository.findAll());
+			return mv;
+		}
 		chamadoRepository.save(chamado);
 		return home();
 	}

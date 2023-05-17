@@ -1,8 +1,13 @@
 package br.com.springdesk.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +21,7 @@ import br.com.springdesk.model.Perfil;
 import br.com.springdesk.model.Tecnico;
 import br.com.springdesk.repository.ChamadoRepository;
 import br.com.springdesk.repository.TecnicoRepository;
+import br.com.springdesk.service.TecnicoService;
 import br.com.springdesk.util.PasswordUtil;
 import br.com.springdesk.util.UploadUtil;
 
@@ -26,6 +32,9 @@ public class TecnicoController {
 	
 	@Autowired
 	TecnicoRepository tecnicoRepository;
+	
+	@Autowired
+	TecnicoService tecnicoService;
 	
 	@Autowired
 	PasswordUtil passwordUtil;
@@ -47,26 +56,37 @@ public class TecnicoController {
 	
 	@PostMapping("/cadastro-tecnico")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ModelAndView cadastro(@ModelAttribute Tecnico tecnico, @RequestParam("file") MultipartFile imagem) {
+	public ModelAndView cadastro(@Valid @ModelAttribute Tecnico tecnico, BindingResult result, @RequestParam("file") MultipartFile imagem) {
 		ModelAndView mv = new ModelAndView("tecnico/cadastro");
-		
-		String hashSenha = passwordUtil.encoder(tecnico.getSenha());
-		tecnico.setSenha(hashSenha);
-		mv.addObject("usuario", tecnico);
-		
-		try {
-			if(uploadUtil.uploadImagem(imagem)) {
-				tecnico.setImagem(imagem.getOriginalFilename());
-			}
-			tecnicoRepository.save(tecnico);
-			System.out.println("Salvo com sucesso: " + tecnico.getNome() + " " + tecnico.getImagem());
-			return home();
-		} catch (Exception e) {
-			mv.addObject("msgErro", e.getMessage());
-			System.out.println("Erro ao salvar " + e.getMessage());
-			return mv;
+		mv.addObject("tecnico", tecnico);
+		String erro = tecnicoService.validaEmailExistente(tecnico);
+		if( erro != null && !erro.isEmpty()) {
+			ObjectError error = new ObjectError("globalError", erro);
+			result.addError(error);
 		}
 		
+		if(result.hasErrors()) {
+			System.out.println("Erro ao salvar " + result.getAllErrors());
+			mv.setViewName("tecnico/cadastro");
+			mv.addObject("tecnico", tecnico);
+			mv.addObject("perfils", Perfil.values());
+			return mv;
+		} else {
+			try {
+				tecnicoService.salvarTecnico(tecnico, imagem);
+			} catch (Exception e) {
+				erro = e.getLocalizedMessage();
+				ObjectError error = new ObjectError("globalError", erro);
+				result.addError(error);
+				System.out.println("Erro ao salvar " + e.getMessage());
+				mv.setViewName("tecnico/cadastro");
+				mv.addObject("tecnico", tecnico);
+				mv.addObject("perfils", Perfil.values());
+				return mv;
+			}
+			
+		}
+		return home();
 	}
 	
 	@GetMapping("/inicio")
@@ -86,8 +106,17 @@ public class TecnicoController {
 	
 	@GetMapping("/excluir/{id}")
 	@PreAuthorize("hasAuthority('ADMIN')")
-	public ModelAndView excluirCliente(@PathVariable("id") Integer id) {
-		tecnicoRepository.deleteById(id);
+	public ModelAndView excluirTecnico(@PathVariable("id") Integer id) {
+		
+		try {
+			tecnicoRepository.deleteById(id);
+		}catch (DataIntegrityViolationException e) {
+			ModelAndView mv =  new ModelAndView("tecnico/tecnico-list");
+			mv.addObject("tecnicos", tecnicoRepository.findAll());
+			String erro = "Operação não permitida - registro vinculado";
+			mv.addObject("msgErro", erro);
+			return mv;
+		}		
 		return tecnicosList();
 	}
 	
@@ -103,7 +132,7 @@ public class TecnicoController {
 	@PostMapping("/editar-tecnico")
 	@PreAuthorize("hasAuthority('ADMIN')")
 	public ModelAndView editar(Tecnico tecnico) {
-		tecnicoRepository.save(tecnico);
+		tecnicoService.editarTecnico(tecnico);
 		return tecnicosList();
 	}
 

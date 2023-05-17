@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 public class Chamado {
@@ -18,7 +20,7 @@ public class Chamado {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+	@Size(min = 5, max = 50)
 	private String titulo;
 	
 	private LocalDate dataAbertura = LocalDate.now();
@@ -27,9 +29,11 @@ public class Chamado {
 	
 	private String observacao;
 	
+	@NotNull(message = "Selecione um status.")
 	@Enumerated(EnumType.STRING)
 	private StatusTicket status;
 	
+	@NotNull(message = "Selecione uma prioridade.")
 	@Enumerated(EnumType.STRING)
 	private Prioridade prioridade;
 	
@@ -37,6 +41,7 @@ public class Chamado {
 	@JoinColumn(name="cliente_id_fk")
 	private Cliente cliente;
 	
+	@NotNull
 	@ManyToOne
 	@JoinColumn(name="tecnico_id_fk")
 	private Tecnico tecnico;
